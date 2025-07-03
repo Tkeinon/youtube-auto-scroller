@@ -1,0 +1,15 @@
+{
+    "manifest_version": 3,
+    "name": "YouTube Shorts - Autoscroller",
+    "version": "1.0",
+    "description": "Automatically scrolls through YouTube Shorts after a delay.",
+    "permissions": ["storage", "scripting", "tabs"],
+    "host_permissions": ["*://www.youtube.com/*"],
+    "content_scripts": [
+      {
+        "matches": ["*://www.youtube.com/shorts/*"],
+        "js": ["content.js"]
+      }
+    ]
+}
+      
