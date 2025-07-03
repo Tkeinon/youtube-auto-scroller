@@ -7,7 +7,6 @@ function attachListener(video) {
         return;
     }
 
-    // Remove previous polling if any
     if (pollInterval) {
         clearInterval(pollInterval);
     }
@@ -17,11 +16,12 @@ function attachListener(video) {
 
 function startPollingVideoEnd(video) {
     pollInterval = setInterval(() => {
+        // Videos might not toggle "ended" attribute 'cause autoplay is on
+        // so instead, skip to next one when almost at the end of the video
         if (video.ended) {
             moveToNextShort();
             clearInterval(pollInterval);
         } else if (video.duration && video.currentTime > 0 && (video.duration - video.currentTime) < 0.5) {
-            // If within 0.5 seconds of ending
             moveToNextShort();
             clearInterval(pollInterval);
         }
@@ -29,12 +29,10 @@ function startPollingVideoEnd(video) {
 }
 
 function findShortsVideo() {
-    // Shorts video usually has the tag 'video' inside the Shorts player
     return document.querySelector('ytd-reel-video-renderer video');
 }
 
 function moveToNextShort() {
-    // The next button in Shorts is usually an arrow button
     const navDown = document.getElementById('navigation-button-down');
     let nextButton;
 
@@ -44,8 +42,6 @@ function moveToNextShort() {
         nextButton = document.querySelector('button[aria-label="Next"]');
     }
 
-    console.log('moving to next..')
-
     if (nextButton) {
         nextButton.click();
     } else {
@@ -54,7 +50,6 @@ function moveToNextShort() {
 }
 
 function observeShorts() {
-    // Observe changes in the Shorts player area
     const shortsPlayer = document.querySelector('ytd-reel-video-renderer video');
 
     if (!shortsPlayer) {
