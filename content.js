@@ -3,6 +3,7 @@ let autoscrollEnabled = true; // Local state, not persisted
 
 // Remove old button if it exists (for hot reloads)
 const oldBtn = document.getElementById(BUTTON_ID);
+
 if (oldBtn) {
     oldBtn.remove();
 };
@@ -30,13 +31,11 @@ function setButtonState(enabled) {
     btn.style.background = enabled ? '#0a0' : '#a00';
 }
 
-// Toggle state on click
 btn.addEventListener('click', () => {
     autoscrollEnabled = !autoscrollEnabled;
     setButtonState(autoscrollEnabled);
 });
 
-// Initial state
 setButtonState(autoscrollEnabled);
 
 let observer;
@@ -51,13 +50,13 @@ function attachListener(video) {
     if (pollInterval) {
         clearInterval(pollInterval);
     }
+
     activeVideo = video;
     startPollingVideoEnd(video);
 }
 
 function startPollingVideoEnd(video) {
     pollInterval = setInterval(() => {
-        // Check toggle state before autoscroll
         if (!autoscrollEnabled) {
             return
         }; 
@@ -98,25 +97,6 @@ function moveToNextShort() {
     }
 }
 
-function observeShorts() {
-    const shortsPlayer = document.querySelector('ytd-reel-video-renderer video');
-
-    if (!shortsPlayer) {
-        return;
-    }
-
-    if (observer) {
-        observer.disconnect();
-    }
-
-    observer = new MutationObserver(() => {
-        const video = findShortsVideo();
-        attachListener(video);
-    });
-
-    observer.observe(shortsPlayer, { childList: true, subtree: true });
-}
-
 function init() {
     // Only run on Shorts pages
     if (!window.location.pathname.startsWith('/shorts/')) {
@@ -125,13 +105,12 @@ function init() {
 
     const video = findShortsVideo();
     attachListener(video);
-    observeShorts();
 }
 
 // Run on initial load
 init();
 
-// Re-run when navigating between Shorts (YouTube SPA navigation)
+// Re-run when navigating between Shorts
 let lastPath = location.pathname;
 
 setInterval(() => {
